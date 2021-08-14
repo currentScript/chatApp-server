@@ -5,31 +5,31 @@ import { MyContext } from "../../types/MyContext";
 
 @Resolver()
 export class LoginResolver {
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => Boolean)
   async login(
     @Arg("email") email: string,
     @Arg("password") password: string,
     @Ctx() ctx: MyContext
-  ): Promise<User | null> {
+  ): Promise<boolean> {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return null;
+      return false;
     }
 
     const valid = bcrypt.compare(password, user.password);
 
     if (!valid) {
-      return null;
+      return false;
     }
 
-    if (user.image) {
-      user.image = `${ctx.req.headers.host}/imageProfile/${user.image}.jpg`;
-    }
+    // if (user.image) {
+    //   user.image = `${ctx.req.headers.host}/imageProfile/${user.image}.jpg`;
+    // }
 
     // set cookie
     ctx.req.session.userId = user.id;
 
-    return user;
+    return true;
   }
 }
