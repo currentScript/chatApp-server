@@ -120,7 +120,7 @@ const main = async () => {
   );
 
   const httpServer = createServer(app);
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
   apolloServer.installSubscriptionHandlers(httpServer);
 
   httpServer.listen(4000, () => {
