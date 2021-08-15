@@ -60,7 +60,7 @@ export class LoadRoomResolver {
     const messageAuthors = await User.find({ id: In(messagesIds) });
     messageAuthors.map((user) => {
       if (user.image) {
-        user.image = `${ctx.req.headers.host}/imageProfile/${user.image}.jpg`;
+        user.image = `${ctx.req.headers.host}/roomProfile/${user.image}.jpg`;
       }
       console.log(user.image);
     });
