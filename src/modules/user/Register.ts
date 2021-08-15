@@ -6,11 +6,16 @@ import { MyContext } from "src/types/MyContext";
 
 @Resolver()
 export class RegisterResolver {
-  @Mutation(() => User)
+  @Mutation(() => User, { nullable: true })
   async register(
     @Arg("data") { email, username, password }: RegisterInput,
     @Ctx() ctx: MyContext
-  ): Promise<User> {
+  ): Promise<User | null> {
+    const isEmailAlreadyInUse = await User.findOne({ email });
+    if (isEmailAlreadyInUse) {
+      return null;
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
     const tag = Math.floor(1000 + Math.random() * 9000);
 
