@@ -34,7 +34,7 @@ export class RoomPictureResolver {
       return false;
     }
 
-    // * delete old picture first * //
+    // delete old picture first
     if (room.image) {
       fs.unlink(`images/room/${room.image}.jpg`, (err) => {
         if (err) {

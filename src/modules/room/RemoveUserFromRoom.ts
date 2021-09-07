@@ -12,16 +12,16 @@ export class RemoveUserFromRoomResolver {
     @Arg("email") email: string,
     @Ctx() ctx: MyContext
   ): Promise<Boolean> {
-    const valid = await RoomUser.find({
+    const valid = await RoomUser.findOne({
       where: { userId: ctx.req.session.userId, roomId },
     });
 
-    if (!valid[0]) {
+    if (!valid) {
       return false;
     }
 
-    const user = await User.find({ email });
-    const userId = user[0].id;
+    const user = await User.findOne({ email });
+    const userId = user?.id;
 
     const removedRoomUser = await RoomUser.delete({ roomId, userId });
 

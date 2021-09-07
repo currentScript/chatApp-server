@@ -14,7 +14,6 @@ export class DeleteRoomResolver {
     @Ctx() ctx: MyContext
   ): Promise<Boolean> {
     const user = await User.findOne({ where: { id: ctx.req.session.userId } });
-    console.log(user);
     if (!user) {
       return false;
     }
@@ -25,7 +24,7 @@ export class DeleteRoomResolver {
         owner: user.id,
       },
     });
-    console.log(room);
+
     if (!room) {
       return false;
     }

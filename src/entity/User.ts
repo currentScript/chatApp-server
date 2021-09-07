@@ -57,19 +57,15 @@ export class User extends BaseEntity {
   image?: string;
 
   // Relations
-
   @OneToMany(() => Room, (room) => room.owner)
   roomOwner: Room[];
 
-  // RoomUser
   @OneToMany(() => RoomUser, (roomUser) => roomUser.user)
   roomConnection: Promise<RoomUser[]>;
 
-  // RoomAdmin
   @OneToMany(() => RoomAdmin, (roomAdmin) => roomAdmin.room)
   adminConnection: Promise<RoomAdmin[]>;
 
-  // friend system
   @OneToMany(() => Friends, (friends) => friends.user)
   friendUser: Friends[];
 

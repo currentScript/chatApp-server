@@ -24,7 +24,7 @@ export class LoadAllRoomsResolver {
 
     rooms.map((room) => {
       if (room.image) {
-        room.image = `${ctx.req.headers.host}/imageProfile/${room.image}.jpg`;
+        room.image = `${ctx.req.headers.host}/imageRoom/${room.image}.jpg`;
       }
     });
 

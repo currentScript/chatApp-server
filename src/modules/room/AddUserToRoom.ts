@@ -8,11 +8,10 @@ export class AddUserToRoomResolver {
   @Mutation(() => Boolean)
   async addUserToRoom(
     @Arg("roomId") roomId: number,
-    @Arg("email") email: string,
+    @Arg("emailOrUsernameTag") emailOrUsername: string,
     @Ctx() ctx: MyContext
   ): Promise<Boolean> {
-    // is the executing user in the room?
-    const valid = await RoomUser.find({
+    const valid = await RoomUser.findOne({
       where: {
         userId: ctx.req.session.userId,
         roomId,
@@ -23,14 +22,14 @@ export class AddUserToRoomResolver {
       return false;
     }
 
-    const user = await User.find({ where: { email } });
-    const userId = user[0].id;
+    const user = await User.findOne({ where: { emailOrUsername } });
+    const userId = user?.id;
 
-    const isUserAlreadInRoom = await RoomUser.find({
+    const isUserAlreadInRoom = await RoomUser.findOne({
       where: { roomId, userId },
     });
 
-    if (isUserAlreadInRoom[0]) {
+    if (isUserAlreadInRoom) {
       return false;
     }
 

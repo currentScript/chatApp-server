@@ -27,7 +27,9 @@ export class LoadRoomResolver {
       return null;
     }
 
-    room.image = `${ctx.req.headers.host}/imageProfile/${room.image}.jpg`;
+    if (room.image) {
+      room.image = `${ctx.req.headers.host}/imageRoom/${room.image}.jpg`;
+    }
 
     // ********************************* Admins *********************************
     const adminArr = await RoomAdmin.find({ where: { roomId } });
@@ -44,25 +46,24 @@ export class LoadRoomResolver {
       return user.userId;
     });
     const participants = await User.find({ id: In(participantsIds) });
-    // add profile pictures //
+
     participants.map((participant) => {
       if (participant.image) {
-        participant.image = `${ctx.req.headers.host}/imageRoom/${participant.image}.jpg`;
+        participant.image = `${ctx.req.headers.host}/imageProfile/${participant.image}.jpg`;
       }
     });
     // **************************************************************************
 
     // ******************************** Messages ********************************
-    const messages = await Message.find({ where: { room: roomId } });
+    const messages = await Message.find({ where: { roomId: roomId } });
     const messagesIds = messages.map((message) => {
       return message.userId;
     });
     const messageAuthors = await User.find({ id: In(messagesIds) });
     messageAuthors.map((user) => {
       if (user.image) {
-        user.image = `${ctx.req.headers.host}/roomProfile/${user.image}.jpg`;
+        user.image = `${ctx.req.headers.host}/imageProfile/${user.image}.jpg`;
       }
-      console.log(user.image);
     });
     messages.map((message) => {
       message.user = messageAuthors.find((user) => user.id === message.userId)!;
@@ -73,6 +74,7 @@ export class LoadRoomResolver {
       room,
       participants,
       messages,
+      id: room.id,
     };
 
     return roomReturnObject;

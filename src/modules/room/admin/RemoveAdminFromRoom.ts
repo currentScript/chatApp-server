@@ -16,23 +16,22 @@ export class RemoveAdminFromRoomResolver {
 
     const admin = ctx.req.session.userId;
 
-    // is the executing user admin of the room?
-    const valid = await RoomAdmin.find({
+    const valid = await RoomAdmin.findOne({
       where: {
         roomId,
         userId: admin,
       },
     });
 
-    if (!valid[0]) {
+    if (!valid) {
       return false;
     }
 
-    const isUserAdmin = await RoomAdmin.find({
+    const isUserAdmin = await RoomAdmin.findOne({
       where: { roomId, userId },
     });
 
-    if (!isUserAdmin[0]) {
+    if (!isUserAdmin) {
       return false;
     }
 

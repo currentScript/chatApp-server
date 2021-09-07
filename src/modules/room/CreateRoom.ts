@@ -12,6 +12,10 @@ export class CreateRoomResolver {
     @Arg("name") name: string,
     @Ctx() ctx: MyContext
   ): Promise<Boolean> {
+    if (name === "") {
+      return false;
+    }
+
     const owner = await User.findOne({ where: { id: ctx.req.session.userId } });
     const room = await Room.create({
       name,

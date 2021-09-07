@@ -1,2 +1,5 @@
 node_modules
 dump.rdb
+ormconfig.json
+/images/profile/*.jpg
+/images/room/*.jpg

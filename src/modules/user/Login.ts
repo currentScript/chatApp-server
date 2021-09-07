@@ -23,9 +23,9 @@ export class LoginResolver {
       return false;
     }
 
-    // if (user.image) {
-    //   user.image = `${ctx.req.headers.host}/imageProfile/${user.image}.jpg`;
-    // }
+    if (user.image) {
+      user.image = `${ctx.req.headers.host}/imageProfile/${user.image}.jpg`;
+    }
 
     // set cookie
     ctx.req.session.userId = user.id;

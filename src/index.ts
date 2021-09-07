@@ -26,18 +26,20 @@ import { RemoveAdminFromRoomResolver } from "./modules/room/admin/RemoveAdminFro
 import { AboutMeResolver } from "./modules/user/aboutMe/AboutMe";
 import { LoadAllRoomsResolver } from "./modules/room/LoadAllRooms";
 import { MeResolver } from "./modules/user/Me";
+import { LoggedInResolver } from "./modules/user/LoggedIn";
+import { IsAdminResolver } from "./modules/room/admin/IsAdmin";
+import { ProfilePictureResolver } from "./modules/user/ProfilePicture";
+import { LogoutResolver } from "./modules/user/logout";
+import { RoomPictureResolver } from "./modules/room/RoomPicture";
+import { DeleteRoomResolver } from "./modules/room/DeleteRoom";
 
 // Session
 import session from "express-session";
 import connectRedis from "connect-redis";
 import { redis } from "./redis";
-import { DeleteRoomResolver } from "./modules/room/DeleteRoom";
 
 // Upload
 import { graphqlUploadExpress } from "graphql-upload";
-import { ProfilePictureResolver } from "./modules/user/ProfilePicture";
-import { LogoutResolver } from "./modules/user/logout";
-import { RoomPictureResolver } from "./modules/room/RoomPicture";
 
 const main = async () => {
   await createConnection();
@@ -73,6 +75,8 @@ const main = async () => {
       ProfilePictureResolver,
       LogoutResolver,
       RoomPictureResolver,
+      LoggedInResolver,
+      IsAdminResolver,
     ],
   });
   const RedisStore = connectRedis(session);
@@ -115,7 +119,6 @@ const main = async () => {
       credentials: true,
       origin: "http://localhost:3000",
     }),
-    // 2097152 = 2 MiB    // https://meta.stackexchange.com/questions/169543/what-are-the-displayed-and-maximum-uploaded-profile-picture-sizes
     graphqlUploadExpress({ maxFileSize: 2097152, maxFiles: 1 })
   );
 

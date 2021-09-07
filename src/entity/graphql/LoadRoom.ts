@@ -13,4 +13,7 @@ export class LoadRoom {
 
   @Field(() => [Message])
   messages: Message[];
+
+  @Field()
+  id: number;
 }

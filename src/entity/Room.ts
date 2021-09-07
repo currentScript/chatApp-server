@@ -2,6 +2,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -30,8 +31,11 @@ export class Room extends BaseEntity {
   @Field({ nullable: true })
   image?: string;
 
-  // Relations
+  @Field((_type) => Date)
+  @CreateDateColumn()
+  created: Date;
 
+  // Relations
   @ManyToOne(() => User, (user) => user.roomOwner)
   @Field(() => User)
   owner: User;
@@ -40,11 +44,9 @@ export class Room extends BaseEntity {
   @Field((_type) => Message)
   messages: Promise<Message[]>;
 
-  // RoomUser
   @OneToMany(() => RoomUser, (roomUser) => roomUser.room)
   userConnection: Promise<RoomUser[]>;
 
-  // RoomAdmin
   @OneToMany(() => RoomAdmin, (roomAdmin) => roomAdmin.room)
   adminConnection: Promise<RoomAdmin[]>;
 }

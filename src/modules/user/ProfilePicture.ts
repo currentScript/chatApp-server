@@ -24,7 +24,7 @@ export class ProfilePictureResolver {
       return false;
     }
 
-    // * delete old picture first * //
+    // delete old picture first
     if (user.image) {
       fs.unlink(`images/profile/${user.image}.jpg`, (err) => {
         if (err) {

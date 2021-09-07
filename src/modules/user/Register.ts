@@ -19,6 +19,13 @@ export class RegisterResolver {
     const hashedPassword = await bcrypt.hash(password, 12);
     const tag = Math.floor(1000 + Math.random() * 9000);
 
+    const tagAlreadyInUseWithUsername = await User.findOne({
+      username: username,
+      tag,
+    });
+
+    if (tagAlreadyInUseWithUsername) return null;
+
     const user = await User.create({
       username,
       tag,
@@ -26,7 +33,7 @@ export class RegisterResolver {
       password: hashedPassword,
     }).save();
 
-    // * Auto-Login * //
+    // Auto-Login
     ctx.req.session.userId = user.id;
 
     return user;

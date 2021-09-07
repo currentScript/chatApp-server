@@ -17,15 +17,14 @@ export class AddAdminToRoomResolver {
 
     const owner = ctx.req.session.userId;
 
-    // is the executing user admin of the room?
-    const valid = await RoomAdmin.find({
+    const valid = await RoomAdmin.findOne({
       where: {
         roomId,
         userId: owner,
       },
     });
 
-    if (!valid[0]) {
+    if (!valid) {
       return false;
     }
 
@@ -35,7 +34,7 @@ export class AddAdminToRoomResolver {
       },
     });
 
-    if (isUserInRoom) {
+    if (!isUserInRoom) {
       return false;
     }
 

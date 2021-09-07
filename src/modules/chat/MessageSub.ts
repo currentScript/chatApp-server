@@ -24,10 +24,9 @@ export class MessageSubResolver {
     @Ctx() ctx: MyContext
   ) {
     const userId = ctx.req.session.userId;
-    const roomUser = await RoomUser.find({ where: { roomId, userId } });
+    const valid = await RoomUser.findOne({ where: { roomId, userId } });
     const user = await User.findOne({ where: { id: userId } });
     const room = await Room.findOne({ where: { id: roomId } });
-    const valid = roomUser[0] ? true : false;
 
     if (!valid) {
       return false;
@@ -36,7 +35,6 @@ export class MessageSubResolver {
     let profileImgUrl;
     if (user?.image) {
       profileImgUrl = `${ctx.req.headers.host}/imageProfile/${user.image}.jpg`;
-      console.log(profileImgUrl);
       user.image = profileImgUrl;
     }
 
@@ -60,9 +58,9 @@ export class MessageSubResolver {
     @Ctx() ctx: any
   ): Promise<Message | null> {
     const userId = ctx.connection.context.req.session.userId;
-    const valid = await RoomUser.find({ where: { roomId, userId } });
+    const valid = await RoomUser.findOne({ where: { roomId, userId } });
 
-    if (!valid[0]) {
+    if (!valid) {
       return null;
     }
 

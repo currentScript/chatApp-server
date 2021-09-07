@@ -1,6 +1,5 @@
 import { RoomUser } from "../../entity/RoomUser";
 import { Arg, Ctx, Query, Resolver } from "type-graphql";
-// import { getRepository } from "typeorm";
 import { User } from "../../entity/User";
 import { In } from "typeorm";
 import { MyContext } from "src/types/MyContext";
@@ -12,14 +11,14 @@ export class LoadRoomParticipantsResolver {
     @Arg("roomId") roomId: number,
     @Ctx() ctx: MyContext
   ): Promise<User[] | null> {
-    const valid = await RoomUser.find({
+    const valid = await RoomUser.findOne({
       where: {
         userId: ctx.req.session.userId,
         roomId,
       },
     });
 
-    if (!valid[0]) {
+    if (!valid) {
       return null;
     }
 
