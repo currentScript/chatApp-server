@@ -22,7 +22,16 @@ export class AddUserToRoomResolver {
       return false;
     }
 
-    const user = await User.findOne({ where: { emailOrUsername } });
+    const tag = emailOrUsername.split("#");
+
+    const user = await User.findOne({
+      where: [{ email: emailOrUsername }, { username: tag[0], tag: tag[1] }],
+    });
+
+    if (!user) {
+      return false;
+    }
+
     const userId = user?.id;
 
     const isUserAlreadInRoom = await RoomUser.findOne({
