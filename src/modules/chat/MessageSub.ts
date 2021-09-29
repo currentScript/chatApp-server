@@ -64,7 +64,7 @@ export class MessageSubResolver {
       return null;
     }
 
-    if (message.room.id == roomId) {
+    if (message.room.id === roomId) {
       return message;
     }
 
