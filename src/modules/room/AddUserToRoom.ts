@@ -1,16 +1,43 @@
 import { RoomUser } from "../../entity/RoomUser";
 import { User } from "../../entity/User";
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Mutation, ObjectType, Resolver } from "type-graphql";
 import { MyContext } from "src/types/MyContext";
+
+@ObjectType()
+class Response {
+  @Field()
+  message: string;
+  @Field()
+  statusCode: number;
+}
+
+const responses = {
+  NOT_PERMITTED: {
+    message: "not permitted",
+    statusCode: 401,
+  },
+  USER_NOT_FOUND: {
+    message: "user not found",
+    statusCode: 404,
+  },
+  USER_ALREADY_ADDED: {
+    message: "user already added",
+    statusCode: 406,
+  },
+  USER_ADDED: {
+    message: "user added",
+    statusCode: 200,
+  },
+};
 
 @Resolver()
 export class AddUserToRoomResolver {
-  @Mutation(() => Boolean)
+  @Mutation(() => Response)
   async addUserToRoom(
     @Arg("roomId") roomId: number,
-    @Arg("emailOrUsernameTag") emailOrUsername: string,
+    @Arg("usernameTag") username: string,
     @Ctx() ctx: MyContext
-  ): Promise<Boolean> {
+  ): Promise<Response> {
     const valid = await RoomUser.findOne({
       where: {
         userId: ctx.req.session.userId,
@@ -19,17 +46,17 @@ export class AddUserToRoomResolver {
     });
 
     if (!valid) {
-      return false;
+      return responses.NOT_PERMITTED;
     }
 
-    const tag = emailOrUsername.split("#");
+    const tag = username.split("#");
 
     const user = await User.findOne({
-      where: [{ email: emailOrUsername }, { username: tag[0], tag: tag[1] }],
+      where: { username: tag[0], tag: tag[1] },
     });
 
     if (!user) {
-      return false;
+      return responses.USER_NOT_FOUND;
     }
 
     const userId = user?.id;
@@ -39,10 +66,10 @@ export class AddUserToRoomResolver {
     });
 
     if (isUserAlreadInRoom) {
-      return false;
+      return responses.USER_ALREADY_ADDED;
     }
 
     await RoomUser.create({ roomId, userId }).save();
-    return true;
+    return responses.USER_ADDED;
   }
 }
