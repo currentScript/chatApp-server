@@ -9,6 +9,8 @@ class Response {
   message: string;
   @Field()
   statusCode: number;
+  @Field()
+  user?: User;
 }
 
 const responses = {
@@ -54,12 +56,16 @@ export class AddUserToRoomResolver {
     const user = await User.findOne({
       where: { username: tag[0], tag: tag[1] },
     });
+    console.log(roomId);
+    console.log(tag);
+    console.log(user);
 
     if (!user) {
       return responses.USER_NOT_FOUND;
     }
 
     const userId = user?.id;
+    console.log(userId);
 
     const isUserAlreadInRoom = await RoomUser.findOne({
       where: { roomId, userId },
@@ -70,6 +76,13 @@ export class AddUserToRoomResolver {
     }
 
     await RoomUser.create({ roomId, userId }).save();
-    return responses.USER_ADDED;
+
+    const returnValue = {
+      message: responses.USER_ADDED.message,
+      statusCode: responses.USER_ADDED.statusCode,
+      user,
+    };
+
+    return returnValue;
   }
 }
