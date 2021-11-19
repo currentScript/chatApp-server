@@ -9,7 +9,7 @@ class Response {
   message: string;
   @Field()
   statusCode: number;
-  @Field()
+  @Field({ nullable: true })
   user?: User;
 }
 
